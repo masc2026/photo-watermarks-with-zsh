@@ -18,7 +18,7 @@ The following watermarks can be added optionally:
 
 Example with TI Tag          |  Example with AL Tag |  Example with NC Tag
 :-------------------------:|:-------------------------:|:-------------------------:
-<img align="center" height="380" src="./img/img01.jpg"> | <img align="center" height="380" src="./img/img02.jpg">| <img align="center" height="380" src="./img/file-000005.png">
+<img align="center" width="500" src="./img/img01.jpg"> | <img align="center" width="500" src="./img/img02.jpg">| <img align="center" width="500" src="./img/file-000005.png">
 
 </div>
 
