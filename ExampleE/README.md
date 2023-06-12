@@ -16,7 +16,7 @@ Change to `photo-watermarks-with-zsh-main` directory
 
     cd <my projects>/photo-watermarks-with-zsh-main
 
-Create animated `WebP` ("Screencat") from the [screenshot series](/Photos/). Adding Exif keywords for the title, the duration of each frame and the keystroke:
+Create animated `WebP` ("Screencast") from the [screenshot series](/Photos/). Adding Exif keywords for the title, the duration of each frame and the keystroke:
 
     backup="$(date +%s)"; mkdir -p "Backup/$backup"; mv Example "Backup/$backup"; mkdir Example
     cp -r ExampleE/Photos Example
