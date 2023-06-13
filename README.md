@@ -1,4 +1,4 @@
-# Watermark photos and create animated Gif and WebP with Zsh
+# Watermark photos and create animated Gif and WebP
 
 The [run.zsh](/src/run.zsh) zsh script goes through a series of photos and renames the files in order of the date they were taken, and adds watermarks to them based on the exif information of the photo files.
 
@@ -263,9 +263,9 @@ Option          |  Comment
 `-noelapsedtimewm` | No elapsed time watermark
 `-nodatewm` | No capture/creation date watermark
 `-timewm` | Add capture/creation time watermark to date watermark
-`-nfcwm` | Add a watermark in the middle of the photo with the keystroke information (see Exif tag `NC:<value>`).
+`-nfcwm` | Add a watermark in the middle of the photo with the keystroke information (see Exif tag `NC:<value>`)
 `-tz <val>` | Process the photos with time zone set to _\<val\>_; e.g "-4" Miami(US) time zone  or "2" Berlin(DE) daylight saving time zone
-`-ext <val>`|  Consider file with extension _\<val\>_; e.g. "png" "jpeg". Default is "jpg". Multiple possible.
+`-ext <val>`|  Consider file with extension _\<val\>_; e.g. "png" "jpeg". Default is "jpg". Multiple `-ext` are possible.
 
 </div>
 
@@ -277,10 +277,10 @@ The following Exif tags can be used to specify information about how the photo s
 
 Tag          |  Value Type | Comment
 -------------------------|-------------------------|-----
-`TI:<value>` | String (with a few limitations) | Example: `TI:Holiday 2022`. Create a watermark with this value.
-`AL:<value>` | String (with a few limitations) | Example: `AL:The first day`. Create a watermark with this value.
-`MS:<value>` | Unsigned Int | Example: `MS:800`. Show this photo as a frame for 800ms in the animated `WebP`.
-`NC:<value>` | String (with a few limitations) | Example: `NC:ALT-p`. Used with `-nfcwm` if Show this photo as a frame for 800ms in the animated `WebP`.
+`TI:<value>` | String (with a few limitations) | Example: `TI:Holiday 2022`. Create a watermark with this value
+`AL:<value>` | String (with a few limitations) | Example: `AL:The first day`. Create a watermark with this value
+`MS:<value>` | Unsigned Int | Example: `MS:800`. Show this photo as a frame for 800ms in the animated `WebP`
+`NC:<value>` | String (with a few limitations) | Example: `NC:ALT-p`. Used with `-nfcwm`
 
 </div>
 

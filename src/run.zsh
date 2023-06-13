@@ -12,14 +12,6 @@ source "$MYDIR"/wm.zsh
 
 zparseopts -D -E gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore tz::=usetz ext+:=useext
 
-# Define Source and Destination
-#sourceroot="$HOME/Desktop/source"
-#destroot="$HOME/Desktop/result"
-#sourcedir=("Flowers")
-#destdir=("FlowersImages")
-
-DISABLE_SYSLOG=${DISABLE_SYSLOG:-0}
-
 # set -ext default ".jpg"
 if [[ ${#useext} -gt 1 ]]; then useext=($useext); else useext=(-ext jpg); fi;
 
@@ -28,6 +20,7 @@ for index in {2..${#useext}..2};do allext+=($useext[index]); done
 sourceroot="$MYDIR"/../"Example"
 destroot="$MYDIR"/../"Example"
 
+# Define Source and Destination
 #destdir=("Blue" "Yellow" "Green" "Purple" "Red" "White")
 destdir=("Photos")
 #sourcedir=("Blau" "Gelb" "Grün" "Lila" "Rot" "Weiß")
@@ -37,6 +30,7 @@ specnametag="AL"
 titletag="TI"
 durtag="MS"
 nfctag="NC"
+
 timestamp=$(date +%s)
 
 # Make Destination Directories
@@ -58,7 +52,7 @@ do
    i=i+1
 done
 
-# Watermarking Pictures at Destination
+# Watermarking loop
 typeset -i i=1 max=${#sourcedir[*]}
 while (( i <= max ))
 do
@@ -66,4 +60,5 @@ do
    watermark  -specnametag $specnametag -titletag $titletag -durtag $durtag -nfctag $nfctag -tsdir "$workingdir" $animation $ignore -tz $usetz[2] ${useext}
    i=i+1
 done
+
 return 0

@@ -1,6 +1,6 @@
 # Example E -  Creating a screencast from a screenshot series
 
-Creating a screencast from a [screenshot series](./Photos/).
+Create a "screencast" as an animated `WebP` from a [screenshot series](./photos/).
 
 ## Result
 
@@ -10,16 +10,19 @@ Creating a screencast from a [screenshot series](./Photos/).
 
 </div>
 
-## Instructions
+## Instruction
 
 Change to `photo-watermarks-with-zsh-main` directory
 
     cd <my projects>/photo-watermarks-with-zsh-main
 
-Create animated `WebP` ("Screencast") from the [screenshot series](/Photos/). Adding Exif keywords for the title, the duration of each frame and the keystroke:
+Save the "Example" directory and copy the example files into a newly created "Example" directory:
 
     backup="$(date +%s)"; mkdir -p "Backup/$backup"; mv Example "Backup/$backup"; mkdir Example
     cp -r ExampleE/Photos Example
+
+Add Exif tags and values for title, duration for each frame and keystroke information:
+
     exiftool -P -Keywords="TI:Start the script,NC:CMD-v,MS:1000" -overwrite_original ./Example/Photos/img_1686487311.png
     exiftool -P -Keywords="TI:View after loading the project list,NC:,MS:500" -overwrite_original ./Example/Photos/img_1686487319.png
     exiftool -P -Keywords="TI:Next page,NC:RIGHT,MS:500" -overwrite_original ./Example/Photos/img_1686487328.png
@@ -42,10 +45,7 @@ Create animated `WebP` ("Screencast") from the [screenshot series](/Photos/). Ad
     exiftool -P -Keywords="TI:Updating,NC:,MS:200" -overwrite_original ./Example/Photos/img_1686487395.png
     exiftool -P -Keywords="TI:Updating,NC:,MS:200" -overwrite_original ./Example/Photos/img_1686487397.png
     exiftool -P -Keywords="TI:Update done,NC:,MS:500" -overwrite_original ./Example/Photos/img_1686487399.png
+
+Run the script:
+
     ./src/run.zsh -ext png -noelapsedtimewm -nodatewm -webpanim -nfcwm
-
-Output:
-
-        1 image files updated
-    ...
-    Saved file <my projects>/photo-watermarks-with-zsh/src/../Example/<timestamp>/Photos/Watermarked/animation.webp (2184766 bytes)
