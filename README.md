@@ -152,7 +152,7 @@ Test if the tools and commands are available with `which`.
 
 On macOS start the terminal:
 
-    which zmodload setopt unsetopt zparseopts print command rm cp date mkdir sort tr sed
+    which zmodload setopt unsetopt zparseopts print command rm cp date mkdir sort tr sed uname
         zmodload: shell built-in command
         setopt: shell built-in command
         unsetopt: shell built-in command
@@ -166,6 +166,7 @@ On macOS start the terminal:
         /usr/bin/sort
         /usr/bin/tr
         /usr/bin/sed
+        /usr/bin/uname
     which exiftool convert composite cwebp webpmux
         /opt/homebrew/bin/exiftool
         /opt/homebrew/bin/convert
@@ -176,7 +177,7 @@ On macOS start the terminal:
 On Ubuntu 22.04 or Ubuntu 22.04 based Docker container:
 
     zsh
-    which zmodload setopt unsetopt zparseopts print command rm cp date mkdir sort tr sed
+    which zmodload setopt unsetopt zparseopts print command rm cp date mkdir sort tr sed uname
         zmodload: shell built-in command
         setopt: shell built-in command
         unsetopt: shell built-in command
@@ -190,6 +191,7 @@ On Ubuntu 22.04 or Ubuntu 22.04 based Docker container:
         /usr/bin/sort
         /usr/bin/tr
         /usr/bin/sed
+        /usr/bin/uname
     which exiftool convert composite cwebp webpmux
         /usr/bin/exiftool
         /usr/bin/convert
@@ -277,7 +279,7 @@ Tag          |  Value Type | Comment
 -------------------------|-------------------------|-----
 `TI:<value>` | String (with a few limitations) | Example: `TI:Holiday 2022`. Create a watermark with this value.
 `AL:<value>` | String (with a few limitations) | Example: `AL:The first day`. Create a watermark with this value.
-`MS:<value>` | Usigned Int | Example: `MS:800`. Show this photo as a frame for 800ms in the animated `WebP`.
+`MS:<value>` | Unsigned Int | Example: `MS:800`. Show this photo as a frame for 800ms in the animated `WebP`.
 `NC:<value>` | String (with a few limitations) | Example: `NC:ALT-p`. Used with `-nfcwm` if Show this photo as a frame for 800ms in the animated `WebP`.
 
 </div>
