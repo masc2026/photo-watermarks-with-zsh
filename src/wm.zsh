@@ -145,7 +145,7 @@ watermark ()
       if [[ $noelapsedtimewm = false ]];
       then
          # Create elapsedTimeStamp.png temp file
-         local timediff=$(( $([[ $(uname) = "Darwin" ]] && print $(date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$fileDateTime" +%s) || print $(date -u --date=$fileDateTime +%s))-$([[ $(uname) = "Darwin" ]] && print $(date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$start" +%s) || print $(date -u --date=$start +%s)) ))
+         local timediff=$(( $([[ $(command uname) = "Darwin" ]] && print $(command date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$fileDateTime" +%s) || print $(command date -u --date=$fileDateTime +%s))-$([[ $(command uname) = "Darwin" ]] && print $(date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$start" +%s) || print $(command date -u --date=$start +%s)) ))
          local days=$(( timediff / (60 * 60 * 24) ))
          local hms=$(( timediff % (60 * 60 * 24) ))
          local hours=$(( hms / (60 * 60) ))
