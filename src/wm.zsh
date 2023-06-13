@@ -155,12 +155,12 @@ watermark ()
          then
             local elapsedTime=$( print -f "%02d:%02d:%02d" $hours $minutes $seconds )
          else
-         if [[ ( $days = 1 ) ]];
-         then
-            elapsedTime=$( print -n $days day' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
-         else
-            elapsedTime=$( print -n $days days' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
-         fi
+            if [[ ( $days = 1 ) ]];
+            then
+               elapsedTime=$( print -n $days day' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+            else
+               elapsedTime=$( print -n $days days' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+            fi
          fi
          local wmElapsedTime=$elapsedTime
 
