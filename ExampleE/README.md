@@ -1,6 +1,6 @@
 # Example E -  Creating a screencast from a screenshot series
 
-Create a "screencast" as an animated `WebP` from a [screenshot series](./photos/).
+Create a "screencast" as an animated `WebP` from a [screenshot series](https://gitlab.com/ms152718212/photo-watermarks-with-zsh/-/tree/main/ExampleE/Photos).
 
 ## Result
 
