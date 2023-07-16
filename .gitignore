@@ -30,4 +30,5 @@ docker-compose.yml
 
 Backup/**
 Example/**
+!Example/.keep
 Ignore/**
