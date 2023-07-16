@@ -58,7 +58,6 @@ watermark ()
 
    for fileInfoNxt in $fileInfo;
    do
-      (( idx=idx+1 ))
       # fileName e.g. "Foto-00121.jpg"
       local fileName=${fileInfoNxt/#(#b)([[:digit:]]#) ([[:digit:]]#) ([[:digit:]]#) ([[:digit:]]#) ([[:digit:]]#) ([[:digit:]]#) (*.*)*/${match[7]}}
 
@@ -85,123 +84,132 @@ watermark ()
       local alltags=
       alltags=$(exiftool -p '$Keywords' -q -f "$fileName")
       # Search pattern is $specnametag:nameL
-      local nameL=
-      nameL=$( if [[ $alltags = (#b)*$specnametag:([[:alnum:][:space:]\-\.\?\:\&\"]#)* ]]; then print $match[1]; fi )
-
+      local nameL=()
+      : ${alltags//(#m)${specnametag}:[^,]#/${nameL[1+$#nameL]::=$MATCH[$#specnametag+2,$#MATCH]}}
       # Search pattern is $titletag:titleL
-      local titleL=
-      titleL=$( if [[ $alltags = (#b)*$titletag:([[:alnum:]|[:space:]\-\.\?\:\&\"]#)* ]]; then print $match[1]; fi )
-      
+      local titleL=()
+      : ${alltags//(#m)${titletag}:[^,]#/${nameL[1+$#nameL]::=$MATCH[$#titletag+2,$#MATCH]}}      
       # Search pattern is $nfctag:nfcL
-      local nfcL=
-      nfcL=$( if [[ $alltags = (#b)*$nfctag:([[:alnum:]|[:space:]\-\.\?\:\&\"]#)* ]]; then print $match[1]; fi )
-
+      local nfcL=()
+      : ${alltags//(#m)${nfctag}:[^,]#/${nfcL[1+$#nfcL]::=$MATCH[$#nfctag+2,$#MATCH]}}
       # Search pattern is $durframetag:durL
-      local durL=
-      durL=$( if [[ $alltags = (#b)*$durframetag:([[:alnum:]]#)* ]]; then print $match[1]; else print $stdwebpframedur; fi )
+      local durL=()
+      : ${alltags//(#m)${durframetag}:[0123456789]#/${durL[1+$#durL]::=${MATCH[$#durframetag+2,$#MATCH]}}}
 
-      # Build the comment string ... 
-      local comment="{\"City\":\"$city\",\"State\":\"$state\",\"Country\":\"$countryCode\",\"Altitude\":\"$altitude\",\"Date\":\"$originDate\"}"
-      # ... and add it as JPEG Tag 'COMMENT' and remove all other EXIF data
-      exiftool -COMMENT="$comment" -overwrite_original $fileName
+      [[ $#durL = 0 ]] && durL=($stdwebpframedur)
 
-      local wmDate=
+      local duridx=0;
 
-      if [[ $timewm = false ]];
-      then
-         wmDate=$originDate
-      else
-         wmDate="$originDate  $originTime"
-      fi
+      for durNxt in $durL;
+      do
+         (( duridx=duridx+1 ))
+         (( idx=idx+1 ))
 
-      #continue
+         [[ $#durNxt = 0 ]] && durNxt=($stdwebpframedur)
 
-      # Create Watermark Images
-      # Next Frame Command for Screencast
-      if [[ $nfcwm = true && -n "$nfcL" ]]; then
-         convert -size 220x80 xc:transparent -fill "rgba(0, 0, 0, 0.3)" -draw "roundrectangle 0,0,220,80,15,15" -fill none -gravity center -fill white -font Arial -pointsize 50 -draw "text 0,0 '$nfcL'" nfcStamp.png
-         composite -dissolve 100% -gravity center -geometry +00+05 -density 72 nfcStamp.png $fileName "wm_$fileName"
-      else
-         command cp $fileName "wm_$fileName"
-      fi
+         # Build the comment string ... 
+         local comment="{\"City\":\"$city\",\"State\":\"$state\",\"Country\":\"$countryCode\",\"Altitude\":\"$altitude\",\"Date\":\"$originDate\"}"
+         # ... and add it as JPEG Tag 'COMMENT' and remove all other EXIF data
+         exiftool -COMMENT="$comment" -overwrite_original $fileName
 
-      if [[ -n "$nameL" ]]; then
-         # specnametag Keyword was found in IPTC Image Information:
-         wmName=$nameL
-         # Create nameTitleStamp.png temp file
-         convert -background none -fill white -font Times-Italic -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
-         composite -dissolve 100% -gravity north -geometry +00+05 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
-      else
-         # use title as watermark if name not found
-         if [[ -n "$titleL" ]]; then
-            # titletag Keyword was found in IPTC Image Information:
-            wmTitle=$titleL
-            # Create nameTitleStamp.png temp file
-            convert -background none -fill white -font Arial -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
-            composite -dissolve 100% -gravity north -geometry +00+10 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
-         fi
-      fi
+         local wmDate=
 
-      if [[ $noelapsedtimewm = false ]];
-      then
-         # Create elapsedTimeStamp.png temp file
-         local timediff=$(( $([[ $(command uname) = "Darwin" ]] && print $(command date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$fileDateTime" +%s) || print $(command date -u --date=$fileDateTime +%s))-$([[ $(command uname) = "Darwin" ]] && print $(date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$start" +%s) || print $(command date -u --date=$start +%s)) ))
-         local days=$(( timediff / (60 * 60 * 24) ))
-         local hms=$(( timediff % (60 * 60 * 24) ))
-         local hours=$(( hms / (60 * 60) ))
-         local minutes=$(( ((hms % (60 * 60))  / (60)) ))
-         local seconds=$(( hms % 60 ))
-         if [[ ( $days -lt 1 ) ]];
+         if [[ $timewm = false ]];
          then
-            local elapsedTime=$( print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+            wmDate=$originDate
          else
-            if [[ ( $days = 1 ) ]];
-            then
-               elapsedTime=$( print -n $days day' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
-            else
-               elapsedTime=$( print -n $days days' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+            wmDate="$originDate  $originTime"
+         fi
+
+         #continue
+
+         # Create Watermark Images
+         # Next Frame Command for Screencast
+         if [[ $nfcwm = true && -n "$nfcL[$duridx]" ]]; then
+            convert -size 220x80 xc:transparent -fill "rgba(0, 0, 0, 0.3)" -draw "roundrectangle 0,0,220,80,15,15" -fill none -gravity center -fill white -font Arial -pointsize 50 -draw "text 0,0 '$nfcL[$duridx]'" nfcStamp.png
+            composite -dissolve 100% -gravity center -geometry +00+05 -density 72 nfcStamp.png $fileName "wm_$fileName"
+         else
+            command cp $fileName "wm_$fileName"
+         fi
+
+         if [[ -n "$nameL[$duridx]" ]]; then
+            # specnametag Keyword was found in IPTC Image Information:
+            wmName=$nameL[$duridx]
+            # Create nameTitleStamp.png temp file
+            convert -background none -fill white -font Times-Italic -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
+            composite -dissolve 100% -gravity north -geometry +00+05 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
+         else
+            # use title as watermark if name not found
+            if [[ -n "$titleL[$duridx]" ]]; then
+               # titletag Keyword was found in IPTC Image Information:
+               wmTitle=$titleL[$duridx]
+               # Create nameTitleStamp.png temp file
+               convert -background none -fill white -font Arial -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
+               composite -dissolve 100% -gravity north -geometry +00+10 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
             fi
          fi
-         local wmElapsedTime=$elapsedTime
 
-         # Create elapsedTimeStamp.png temp file
-         convert -background none -fill white -font Helvetica -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
-         composite -dissolve 50% -gravity south-east -geometry +05+05 -density 72 elapsedTimeStamp.png "wm_$fileName" "wm_$fileName"
-      fi
+         if [[ $noelapsedtimewm = false ]];
+         then
+            # Create elapsedTimeStamp.png temp file
+            local timediff=$(( $([[ $(command uname) = "Darwin" ]] && print $(command date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$fileDateTime" +%s) || print $(command date -u --date=$fileDateTime +%s))-$([[ $(command uname) = "Darwin" ]] && print $(date -j -f "%Y-%2m-%2d %2H:%2M:%2S" "$start" +%s) || print $(command date -u --date=$start +%s)) ))
+            local days=$(( timediff / (60 * 60 * 24) ))
+            local hms=$(( timediff % (60 * 60 * 24) ))
+            local hours=$(( hms / (60 * 60) ))
+            local minutes=$(( ((hms % (60 * 60))  / (60)) ))
+            local seconds=$(( hms % 60 ))
+            if [[ ( $days -lt 1 ) ]];
+            then
+               local elapsedTime=$( print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+            else
+               if [[ ( $days = 1 ) ]];
+               then
+                  elapsedTime=$( print -n $days day' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+               else
+                  elapsedTime=$( print -n $days days' '; print -f "%02d:%02d:%02d" $hours $minutes $seconds )
+               fi
+            fi
+            local wmElapsedTime=$elapsedTime
 
-      if [[ $nodatewm = false ]];
-      then
-         # Create dateStamp.png temp file
-         convert -background none -fill white -font Helvetica -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
+            # Create elapsedTimeStamp.png temp file
+            convert -background none -fill white -font Helvetica -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
+            composite -dissolve 50% -gravity south-east -geometry +05+05 -density 72 elapsedTimeStamp.png "wm_$fileName" "wm_$fileName"
+         fi
+
+         if [[ $nodatewm = false ]];
+         then
+            # Create dateStamp.png temp file
+            convert -background none -fill white -font Helvetica -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
+            
+            # Allign dateStamp.png at the top edge of elapsedTimeStamp.png
+            local offset=$([[ -f dateStamp.png && -f elapsedTimeStamp.png ]] && print $(( 5 + $(exiftool -s3 -ImageHeight elapsedTimeStamp.png) - $(exiftool -s3 -ImageHeight dateStamp.png) ))  || print 5)
+            offset=$((( offset<0 )) && print "$offset" || print "+$offset")
+
+            composite -dissolve 50% -gravity south-west -geometry +05$offset -density 72 dateStamp.png "wm_$fileName" "wm_$fileName"
+         fi
          
-         # Allign dateStamp.png at the top edge of elapsedTimeStamp.png
-         local offset=$([[ -f dateStamp.png && -f elapsedTimeStamp.png ]] && print $(( 5 + $(exiftool -s3 -ImageHeight elapsedTimeStamp.png) - $(exiftool -s3 -ImageHeight dateStamp.png) ))  || print 5)
-         offset=$((( offset<0 )) && print "$offset" || print "+$offset")
+         local newfilename=$(print -f "file-%06d.jpg" $idx)
 
-         composite -dissolve 50% -gravity south-west -geometry +05$offset -density 72 dateStamp.png "wm_$fileName" "wm_$fileName"
-      fi
-      
-      local newfilename=$(print -f "file-%06d.jpg" $idx)
+         # Copy wm_filename.jpg as $newfilename
+         print "New photo created from original $fileName with watermark: $tsdir/Watermarked/$newfilename"
+         command cp "wm_"$fileName Watermarked/"$newfilename"
 
-      # Copy wm_filename.jpg as $newfilename
-      print "New photo created from original $fileName with watermark: $tsdir/Watermarked/$newfilename"
-      command cp "wm_"$fileName Watermarked/"$newfilename"
+         # Create webp image (optional)
+         if [[ $createwebpanim = true ]];
+         then
+            local newwebpfilename=$(print -f "file-%06d.webp" $idx)
+            cwebp -q 80 "Watermarked/$newfilename" -o "Watermarked/$newwebpfilename" 2>> /dev/null
+            webpframes+=( -frame "$tsdir/Watermarked/$newwebpfilename" +$durNxt+0+0+0+b )
+         fi
 
-      # Create webp image (optional)
-      if [[ $createwebpanim = true ]];
-      then
-         local newwebpfilename=$(print -f "file-%06d.webp" $idx)
-         cwebp -q 80 "Watermarked/$newfilename" -o "Watermarked/$newwebpfilename" 2>> /dev/null
-         webpframes+=( -frame "$tsdir/Watermarked/$newwebpfilename" +$durL+0+0+0+b )
-      fi
-
-      # Delete wm_filename.jpg
-      command rm "wm_"$fileName 2> /dev/null
-      # Delete stamp png files
-      command rm nfcStamp.png 2> /dev/null
-      command rm nameTitleStamp.png 2> /dev/null
-      command rm dateStamp.png 2> /dev/null
-      command rm elapsedTimeStamp.png 2> /dev/null
+         # Delete wm_filename.jpg
+         command rm "wm_"$fileName 2> /dev/null
+         # Delete stamp png files
+         command rm nfcStamp.png 2> /dev/null
+         command rm nameTitleStamp.png 2> /dev/null
+         command rm dateStamp.png 2> /dev/null
+         command rm elapsedTimeStamp.png 2> /dev/null
+      done
    done
 
    if [[ $createwebpanim = true ]];

@@ -383,6 +383,10 @@ Example E -  Creating a screencast from a screenshot series
 
 [README](./ExampleE/)
 
+Example F -  Creating an animated WebP with an image that is used several times as a frame
+
+[README](./ExampleF/)
+
 # References
 
 https://www.zsh.org
