@@ -26,3 +26,11 @@ Save the "Example" directory and copy the example files into a newly created "Ex
 Run the script to create animated `WebP`:
 
     ./src/run.zsh -webpanim
+
+Only works on the macOS platform: open the newly created WebP files in the Safari browser like this:
+
+    open -a "Safari" $(print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1]))
+
+On other platforms, find the path to the newly created WebP file, from where you drag it into a browser, this way:
+
+    print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1])

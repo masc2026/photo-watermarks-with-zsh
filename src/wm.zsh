@@ -8,7 +8,7 @@ unsetopt NOMATCH
 
 watermark ()
 {
-   zparseopts -D -E -A opts specnametag::=opts titletag::=opts nfctag::=opts durtag::=opts tsdir:=opts gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore tz::=usetz ext+:=useext
+   zparseopts -D -E -A opts specnametag::=opts titletag::=opts nfctag::=opts durtag::=opts tsdir:=opts gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore tz:=usetz ext+:=useext
    
    local tsdir=$opts[-tsdir]
    local specnametag=$opts[-specnametag]
@@ -21,8 +21,8 @@ watermark ()
    local nodatewm=$( [[ $ignore[(Ie)-nodatewm] -gt 0 ]] && print true || print false )
    local timewm=$( [[ $ignore[(Ie)-timewm] -gt 0 ]] && print true || print false )
    local nfcwm=$( [[ $ignore[(Ie)-nfcwm] -gt 0 ]] && print true || print false )
-   # set timezone to adjust dateTimeOriginal to given timezone before ordering; default is +2
-   local timezone=$( [[ ${#usetz} -gt 1 ]] && print $usetz[2] || print 2 )
+   local timezone=$usetz[2]
+
    # set standard duration in [ms] for webp animation frame if no $durframetag tag set
    local stdwebpframedur=500
    # set duration in 10 [ms] for gif animation frame
@@ -44,7 +44,9 @@ watermark ()
    # in: 2021:05:22 09:51:15 +03:00 IMG_0344.jpg
    # with timezone=3 - out: 2021 05 22 09 51 15 IMG_0344.jpg
    # with timezone=-4 - out: 2021 05 22 02 51 15 IMG_0344.jpg
+
    fileInfo=("${(@f)$(print -l ${fileInfo/#(#b)([[:digit:]]#:[[:digit:]]#:[[:digit:]]#\ [[:digit:]]#:[[:digit:]]#:[[:digit:]]#)\ ([+|-|''])([[:digit:]]#):[[:digit:]]#\ (*.*)/$([[ $match[2] == '+' ]] && offset=$(( $timezone-match[3] )) || offset=$(( $timezone+match[3] )); (( offset > 0 || offset == 0 )) && sign="+" || sign="" ; newdate=$([[ $(uname) = "Darwin" ]] && print $(date -j -v${sign}${offset}H -f "%Y:%2m:%2d %2H:%2M:%2S" "$match[1]" "+%Y:%m:%d %H:%M:%S") || print $(date -u --date=${match[1]/#(#b)([[:digit:]]#):([[:digit:]]#):([[:digit:]]#)\ ([[:digit:]]#:[[:digit:]]#:[[:digit:]]#)/$match[1]-$match[2]-$match[3] $match[4]}' +0000 '$sign$offset' hours' "+%Y:%m:%d %H:%M:%S")); print -f "%s %s\n" $newdate $match[4] )} | command tr : ' ' | command sort -k2 -k3 -k4 -k5 -k6 -k7)}")
+
    # echo $firstLastOfSeries[1] out: 2023 05 22 09 51 15 ER6A3388.jpg
    # echo $firstLastOfSeries[2] out: 2023 05 22 12 22 03 ER6A3498.jpg
    local firstLastOfSeries=("${(@f)$(print -l $fileInfo | command sed '1p;$!d')}")
