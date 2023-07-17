@@ -29,3 +29,13 @@ Save the "Example" directory and copy the example files into a newly created "Ex
 Run the script to create animated `WebP` and `Gif`:
 
     ./src/run.zsh -gifanim -webpanim -noelapsedtimewm -nodatewm
+
+Only works on the macOS platform: open the newly created WebP files in the Safari browser like this:
+
+    open -a "Safari" $(print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1]))
+    open -a "Safari" $(print ./Example/[[:digit:]]#/Photos/Watermarked/animation.gif(-om[1,1]))
+
+On other platforms, you find the path to the newly created Gif and WebP files, from where you can drag it into a browser window, this way:
+
+    print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1])
+    print ./Example/[[:digit:]]#/Photos/Watermarked/animation.gif(-om[1,1])

@@ -28,3 +28,7 @@ Save the "Example" directory and copy the example files into a newly created "Ex
 Run the script to add watermarks:
 
     ./src/run.zsh
+
+Find the path to the newly created files this way:
+
+    print -l ./Example/[[:digit:]]#/Photos/Watermarked/(-om[1,1])

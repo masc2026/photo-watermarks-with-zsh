@@ -27,8 +27,18 @@ Save the "Example" directory and copy the example files into a newly created "Ex
 
 Run the script with timezone set to `+3`:
 
-    ./src/run.zsh -tz 3 -webpanim -withtimewm
+    ./src/run.zsh -tz3 -webpanim -timewm
 
 Run the script with timezone set to `-4`:
 
-    ./src/run.zsh -tz -4 -webpanim -withtimewm
+    ./src/run.zsh -tz-4 -webpanim -timewm
+
+Only works on the macOS platform: open the newly created WebP files in the Safari browser like this:
+
+    open -a "Safari" $(print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1]))
+    open -a "Safari" $(print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[2,2]))
+
+On other platforms, find the path to the newly created WebP files, from where drag it into a browser, this way:
+
+    print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1])
+    print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[2,2])

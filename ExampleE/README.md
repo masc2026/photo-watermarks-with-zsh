@@ -49,3 +49,11 @@ Add Exif tags and values for title, duration for each frame and keystroke inform
 Run the script:
 
     ./src/run.zsh -ext png -noelapsedtimewm -nodatewm -webpanim -nfcwm
+
+Only works on the macOS platform: open the newly created WebP file in the Safari browser like this:
+
+    open -a "Safari" $(print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1]))
+
+On other platforms, you find the path of the newly created WebP file, from where you can drag it into a browser window, this way::
+
+    print ./Example/[[:digit:]]#/Photos/Watermarked/animation.webp(-om[1,1])
