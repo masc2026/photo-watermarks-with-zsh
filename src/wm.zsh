@@ -190,9 +190,10 @@ watermark ()
             composite -dissolve 50% -gravity south-west -geometry +05$offset -density 72 dateStamp.png "wm_$fileName" "wm_$fileName"
          fi
          
-         local newfilename=$(print -f "file-%06d.jpg" $idx)
+         local origfilesext=$fileName:t:e
+         local newfilename=$(print -f "file-%06d.$origfilesext" $idx)
 
-         # Copy wm_filename.jpg as $newfilename
+         # Copy wm_filename.<origfilesext> as $newfilename.<origfilesext>
          print "New photo created from original $fileName with watermark: $tsdir/Watermarked/$newfilename"
          command cp "wm_"$fileName Watermarked/"$newfilename"
 
@@ -204,7 +205,7 @@ watermark ()
             webpframes+=( -frame "$tsdir/Watermarked/$newwebpfilename" +$durNxt+0+0+0+b )
          fi
 
-         # Delete wm_filename.jpg
+         # Delete wm_filename.<extension>
          command rm "wm_"$fileName 2> /dev/null
          # Delete stamp png files
          command rm nfcStamp.png 2> /dev/null
