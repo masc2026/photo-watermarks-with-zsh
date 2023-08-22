@@ -252,12 +252,12 @@ Drag the file `animation.webp` into a browser window; you should see that the an
 
 ### Command 
 
-`run.zsh [-gifanim -webpanim -noelapsedtimewm -nodatewm -timewm -nfcwm] [-tz <val>] [-ext <val>]`
+`run.zsh [-gifanim -webpanim -noelapsedtimewm -nodatewm -sortbyname -timewm -nfcwm] [-tz <val>] [-ext <val>]`
 
 <div align="left">
 
-Option          |  Comment
--------------------------|----------------------------------------------------------------
+Option&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;| Comment
+---|---
 `-gifanim` | Create animated Gif
 `-webpanim` | Create animated WebP
 `-noelapsedtimewm` | No elapsed time watermark
