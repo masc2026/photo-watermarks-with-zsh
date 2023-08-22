@@ -8,7 +8,7 @@ unsetopt NOMATCH
 
 watermark ()
 {
-   zparseopts -D -E -A opts specnametag::=opts titletag::=opts nfctag::=opts durtag::=opts tsdir:=opts gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore tz:=usetz ext+:=useext
+   zparseopts -D -E -A opts specnametag::=opts titletag::=opts nfctag::=opts durtag::=opts tsdir:=opts gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore sortbyname=ignore tz:=usetz ext+:=useext
    
    local tsdir=$opts[-tsdir]
    local specnametag=$opts[-specnametag]
@@ -21,6 +21,7 @@ watermark ()
    local nodatewm=$( [[ $ignore[(Ie)-nodatewm] -gt 0 ]] && print true || print false )
    local timewm=$( [[ $ignore[(Ie)-timewm] -gt 0 ]] && print true || print false )
    local nfcwm=$( [[ $ignore[(Ie)-nfcwm] -gt 0 ]] && print true || print false )
+   local sortbydate=$( [[ $ignore[(Ie)-sortbyname] -gt 0 ]] && print false || print true )
    local timezone=$usetz[2]
 
    # set standard duration in [ms] for webp animation frame if no $durframetag tag set
@@ -37,7 +38,8 @@ watermark ()
    exiftool -P '-offsetTimeOriginal=+02:00' -r -if 'not defined $offsetTimeOriginal or $offsetTimeOriginal !~ /\d/' ${useext[@]} . > /dev/null 2>/dev/null
 
    # echo $fileInfo[1] out: 2023:05:22 09:26:07 +01:00 ER6A3 408 .jpg
-   fileInfo=("${(@f)$(exiftool -p '$dateTimeOriginal $offsetTimeOriginal $fileName' -q -q -f ${useext[@]} *(.))}")
+   fileInfo=("${(@f)$(exiftool -p '$dateTimeOriginal $offsetTimeOriginal $fileName' -q -q -f ${useext[@]} *(.on))}")
+
    # filter out where time info is missing
    fileInfo=("${(@f)$(print -l ${fileInfo/#%(#b)(^[[:digit:]]#:[[:digit:]]#:[[:digit:]]#\ [[:digit:]]#:[[:digit:]]#:[[:digit:]]#\ [+|-|''][[:digit:]]#:[[:digit:]]#\ *.*)/$match[0]})}")
    # adjust time according to $timezone value and order by adjusted date time original
@@ -45,7 +47,12 @@ watermark ()
    # with timezone=3 - out: 2021 05 22 09 51 15 IMG_0344.jpg
    # with timezone=-4 - out: 2021 05 22 02 51 15 IMG_0344.jpg
 
-   fileInfo=("${(@f)$(print -l ${fileInfo/#(#b)([[:digit:]]#:[[:digit:]]#:[[:digit:]]#\ [[:digit:]]#:[[:digit:]]#:[[:digit:]]#)\ ([+|-|''])([[:digit:]]#):[[:digit:]]#\ (*.*)/$([[ $match[2] == '+' ]] && offset=$(( $timezone-match[3] )) || offset=$(( $timezone+match[3] )); (( offset > 0 || offset == 0 )) && sign="+" || sign="" ; newdate=$([[ $(uname) = "Darwin" ]] && print $(date -j -v${sign}${offset}H -f "%Y:%2m:%2d %2H:%2M:%2S" "$match[1]" "+%Y:%m:%d %H:%M:%S") || print $(date -u --date=${match[1]/#(#b)([[:digit:]]#):([[:digit:]]#):([[:digit:]]#)\ ([[:digit:]]#:[[:digit:]]#:[[:digit:]]#)/$match[1]-$match[2]-$match[3] $match[4]}' +0000 '$sign$offset' hours' "+%Y:%m:%d %H:%M:%S")); print -f "%s %s\n" $newdate $match[4] )} | command tr : ' ' | command sort -k2 -k3 -k4 -k5 -k6 -k7)}")
+   if [[ $sortbydate = true ]];
+   then
+      fileInfo=("${(@f)$(print -l ${fileInfo/#(#b)([[:digit:]]#:[[:digit:]]#:[[:digit:]]#\ [[:digit:]]#:[[:digit:]]#:[[:digit:]]#)\ ([+|-|''])([[:digit:]]#):[[:digit:]]#\ (*.*)/$([[ $match[2] == '+' ]] && offset=$(( $timezone-match[3] )) || offset=$(( $timezone+match[3] )); (( offset > 0 || offset == 0 )) && sign="+" || sign="" ; newdate=$([[ $(uname) = "Darwin" ]] && print $(date -j -v${sign}${offset}H -f "%Y:%2m:%2d %2H:%2M:%2S" "$match[1]" "+%Y:%m:%d %H:%M:%S") || print $(date -u --date=${match[1]/#(#b)([[:digit:]]#):([[:digit:]]#):([[:digit:]]#)\ ([[:digit:]]#:[[:digit:]]#:[[:digit:]]#)/$match[1]-$match[2]-$match[3] $match[4]}' +0000 '$sign$offset' hours' "+%Y:%m:%d %H:%M:%S")); print -f "%s %s\n" $newdate $match[4] )} | command tr : ' ' | command sort -k2 -k3 -k4 -k5 -k6 -k7)}")
+   else
+      fileInfo=("${(@f)$(print -l ${fileInfo/#(#b)([[:digit:]]#:[[:digit:]]#:[[:digit:]]#\ [[:digit:]]#:[[:digit:]]#:[[:digit:]]#)\ ([+|-|''])([[:digit:]]#):[[:digit:]]#\ (*.*)/$([[ $match[2] == '+' ]] && offset=$(( $timezone-match[3] )) || offset=$(( $timezone+match[3] )); (( offset > 0 || offset == 0 )) && sign="+" || sign="" ; newdate=$([[ $(uname) = "Darwin" ]] && print $(date -j -v${sign}${offset}H -f "%Y:%2m:%2d %2H:%2M:%2S" "$match[1]" "+%Y:%m:%d %H:%M:%S") || print $(date -u --date=${match[1]/#(#b)([[:digit:]]#):([[:digit:]]#):([[:digit:]]#)\ ([[:digit:]]#:[[:digit:]]#:[[:digit:]]#)/$match[1]-$match[2]-$match[3] $match[4]}' +0000 '$sign$offset' hours' "+%Y:%m:%d %H:%M:%S")); print -f "%s %s\n" $newdate $match[4] )} | command tr : ' ' )}")
+   fi
 
    # echo $firstLastOfSeries[1] out: 2023 05 22 09 51 15 ER6A3388.jpg
    # echo $firstLastOfSeries[2] out: 2023 05 22 12 22 03 ER6A3498.jpg
@@ -100,6 +107,9 @@ watermark ()
 
       [[ $#durL = 0 ]] && durL=($stdwebpframedur)
 
+      # convert $fileName -resize 614x $fileName
+      # convert ~/iPhoneSE3.png $fileName -geometry +129+364 -composite $fileName
+
       local duridx=0;
 
       for durNxt in $durL;
@@ -121,6 +131,11 @@ watermark ()
             wmDate=$originDate
          else
             wmDate="$originDate  $originTime"
+         fi
+
+         if [[ $createwebpanim = true ]];
+         then
+            convert $fileName -background white -alpha remove -alpha off $fileName
          fi
 
          #continue

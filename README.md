@@ -262,6 +262,7 @@ Option          |  Comment
 `-webpanim` | Create animated WebP
 `-noelapsedtimewm` | No elapsed time watermark
 `-nodatewm` | No capture/creation date watermark
+`-sortbyname` | Sort by the original file name and not by the capture/creation date (useful for creating animated Gif or WebP)
 `-timewm` | Add capture/creation time watermark to date watermark
 `-nfcwm` | Add a watermark in the middle of the photo with the keystroke information (see Exif tag `NC:<value>`)
 `-tz<val>` | Process the photos with time zone set to _\<val\>_; e.g "-4" Miami(US) time zone  or "2" Berlin(DE) daylight saving time zone. There must be *NO* space between `-tz` and `<val>`!

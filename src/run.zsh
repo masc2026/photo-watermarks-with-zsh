@@ -10,7 +10,7 @@ unsetopt NOMATCH
 
 source "$MYDIR"/wm.zsh
 
-zparseopts -D -E gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore tz::=usetz ext+:=useext
+zparseopts -D -E gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore sortbyname=ignore tz::=usetz ext+:=useext
 
 # set -ext default ".jpg"
 if [[ ${#useext} -gt 1 ]]; then useext=($useext); else useext=(-ext jpg); fi;
