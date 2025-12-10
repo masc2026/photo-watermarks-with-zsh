@@ -4,11 +4,11 @@ Create a "screencast" as an animated `WebP` from a [screenshot series](./Photos/
 
 ## Result
 
-<div align="center">
+Animated `Webp` file.
 
-<img align="center" width="700" src="https://www.mascapp.com/taxadb/img/animationExampleESmall.webp.png">
-
-</div>
+| Frames Grid Preview |
+| :---: |
+| <img width="700" src="./img/example_e_01.webp"> |
 
 ## Instruction
 

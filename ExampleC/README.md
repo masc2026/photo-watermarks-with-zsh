@@ -8,12 +8,11 @@ The `MS` tag and value is ignored for the animated `Gif`.
 
 ## Result
 
-<div align="center">
+Animated `Gif` and `Webp` files.
 
-Animated Gif         | Animated WebP   
-:-------------------------:|:-------------------------:
-<img align="center" width="600" src="https://www.mascapp.com/taxadb/img/animationExampleC.gif"> | <img align="center" width="600" src="https://www.mascapp.com/taxadb/img/animationExampleC.webp.png">
-</div>
+| Frames Grid Preview |
+| :---: |
+| <img width="500" src="./img/example_c_01.webp"> |
 
 ## Instruction
 

@@ -8,9 +8,9 @@ Add watermarks.
 
 Original          |  Result
 :-------------------------:|:-------------------------:
-<img align="center" width="500" src="./Photos/ER6A2839.jpg"> | <img align="center" width="500" src="../img/file-000001_EA.jpg">
-<img align="center" width="500" src="./Photos/ER6A2861.jpg"> | <img align="center" width="500" src="../img/file-000002_EA.jpg">
-<img align="center" width="500" src="./Photos/ER6A2922.jpg"> | <img align="center" width="500" src="../img/file-000003_EA.jpg">
+<img align="center" width="500" src="./Photos/ER6A2839.jpg"> | <img align="center" width="500" src="./img/file-000001_EA.webp">
+<img align="center" width="500" src="./Photos/ER6A2861.jpg"> | <img align="center" width="500" src="./img/file-000002_EA.webp">
+<img align="center" width="500" src="./Photos/ER6A2922.jpg"> | <img align="center" width="500" src="./img/file-000003_EA.webp">
 
 </div>
 

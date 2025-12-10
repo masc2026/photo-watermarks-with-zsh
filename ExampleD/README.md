@@ -6,13 +6,15 @@ Photos have different time zone settings, some are +1 others +3, they are all se
 
 ## Result
 
-<div align="center">
+Animated `Webp` file.
 
-Timezone = +3        | Timezone = -4  
-:-------------------------:|:-------------------------:
-<img align="center" width="600" src="https://www.mascapp.com/taxadb/img/animationExampleDTZp3.webp.png"> | <img align="center" width="600" src="https://www.mascapp.com/taxadb/img/animationExampleDTZm4.webp.png">
+| Frames Grid Preview Timezone = +3 |
+| :---: |
+| <img width="700" src="./img/example_d_01.webp"> |
 
-</div>
+| Frames Grid Preview Timezone = -4 |
+| :---: |
+| <img width="700" src="./img/example_d_02.webp"> |
 
 ## Instruction
 

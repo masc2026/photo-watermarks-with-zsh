@@ -6,11 +6,11 @@ Use the same original image several times as a frame in the animated WebP with d
 
 ## Result
 
-<div align="center">
+Animated `Webp` file.
 
-<img align="center" width="700" src="https://www.mascapp.com/taxadb/img/animationExampleF.webp.png">
-
-</div>
+| Frames Grid Preview |
+| :---: |
+| <img width="700" src="./img/example_f_01.webp"> |
 
 ## Instruction
 

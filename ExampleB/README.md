@@ -6,11 +6,11 @@ Since the photos are quite small, it makes sense to change the font size: Search
 
 ## Result
 
-<div align="center">
+Animated `Webp` file.
 
-<img align="center" width="400" src="https://www.mascapp.com/taxadb/img/animationExampleB.webp.png">
-
-</div>
+| Frames Grid Preview |
+| :---: |
+| <img width="700" src="./img/example_b_01.webp"> |
 
 ## Instruction
 

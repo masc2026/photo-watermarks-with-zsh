@@ -107,8 +107,8 @@ watermark ()
 
       [[ $#durL = 0 ]] && durL=($stdwebpframedur)
 
-      # convert $fileName -resize 614x $fileName
-      # convert ~/iPhoneSE3.png $fileName -geometry +129+364 -composite $fileName
+      # magick $fileName -resize 614x $fileName
+      # magick ~/iPhoneSE3.png $fileName -geometry +129+364 -composite $fileName
 
       local duridx=0;
 
@@ -135,7 +135,7 @@ watermark ()
 
          if [[ $createwebpanim = true ]];
          then
-            convert $fileName -background white -alpha remove -alpha off $fileName
+            magick $fileName -background white -alpha remove -alpha off $fileName
          fi
 
          #continue
@@ -143,7 +143,7 @@ watermark ()
          # Create Watermark Images
          # Next Frame Command for Screencast
          if [[ $nfcwm = true && -n "$nfcL[$duridx]" ]]; then
-            convert -size 220x80 xc:transparent -fill "rgba(0, 0, 0, 0.3)" -draw "roundrectangle 0,0,220,80,15,15" -fill none -gravity center -fill white -font Arial -pointsize 50 -draw "text 0,0 '$nfcL[$duridx]'" nfcStamp.png
+            magick -size 220x80 xc:transparent -fill "rgba(0, 0, 0, 0.3)" -draw "roundrectangle 0,0,220,80,15,15" -fill none -gravity center -fill white -font Arial -pointsize 50 -draw "text 0,0 '$nfcL[$duridx]'" nfcStamp.png
             composite -dissolve 100% -gravity center -geometry +00+05 -density 72 nfcStamp.png $fileName "wm_$fileName"
          else
             command cp $fileName "wm_$fileName"
@@ -153,7 +153,7 @@ watermark ()
             # specnametag Keyword was found in IPTC Image Information:
             wmName=$nameL[$duridx]
             # Create nameTitleStamp.png temp file
-            convert -background none -fill white -font Times-Italic -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
+            magick -background none -fill white -font Times-Italic -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
             composite -dissolve 100% -gravity north -geometry +00+05 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
          else
             # use title as watermark if name not found
@@ -161,7 +161,7 @@ watermark ()
                # titletag Keyword was found in IPTC Image Information:
                wmTitle=$titleL[$duridx]
                # Create nameTitleStamp.png temp file
-               convert -background none -fill white -font Arial -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
+               magick -background none -fill white -font Arial -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
                composite -dissolve 100% -gravity north -geometry +00+10 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
             fi
          fi
@@ -189,14 +189,14 @@ watermark ()
             local wmElapsedTime=$elapsedTime
 
             # Create elapsedTimeStamp.png temp file
-            convert -background none -fill white -font Helvetica -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
+            magick -background none -fill white -font Helvetica -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
             composite -dissolve 50% -gravity south-east -geometry +05+05 -density 72 elapsedTimeStamp.png "wm_$fileName" "wm_$fileName"
          fi
 
          if [[ $nodatewm = false ]];
          then
             # Create dateStamp.png temp file
-            convert -background none -fill white -font Helvetica -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
+            magick -background none -fill white -font Helvetica -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
             
             # Allign dateStamp.png at the top edge of elapsedTimeStamp.png
             local offset=$([[ -f dateStamp.png && -f elapsedTimeStamp.png ]] && print $(( 5 + $(exiftool -s3 -ImageHeight elapsedTimeStamp.png) - $(exiftool -s3 -ImageHeight dateStamp.png) ))  || print 5)
@@ -233,10 +233,28 @@ watermark ()
    if [[ $createwebpanim = true ]];
    then
       webpmux "${webpframes[@]}" -o "$tsdir/Watermarked"/animation.webp
+#   # frames preview
+#   integer columns=5
+#   local thumb_size="400x"
+#   local -a all_frames
+#   all_frames=("$tsdir/Watermarked"/file-*.(webp)(.n))
+#   if (( ${#all_frames} > 0 )); then
+#      local -a grid_frames
+#      grid_frames=("${all_frames[@]:0:10}") 
+#      magick montage "${grid_frames[@]}" \
+#         -tile "${columns}x" \
+#         -geometry "${thumb_size}>+3+3" \
+#         -background white \
+#         -quality 80 \
+#         -define webp:lossless=false \
+#         "$tsdir/Watermarked/frames.webp"
+#   fi
    fi
-
    if [[ $creategifanim = true ]];
    then
-      convert -delay $gifframedur -loop 0 "$tsdir/Watermarked"/*.* "$tsdir/Watermarked"/animation.gif
+      magick -delay $gifframedur -loop 0 "$tsdir/Watermarked"/*.* "$tsdir/Watermarked"/animation.gif
    fi
+ 
+
+
 }
