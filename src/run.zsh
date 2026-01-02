@@ -46,13 +46,43 @@ done
 
 # Copy from Source to Destination
 i=1
+print "Start Loop. i=$i, max=$max"
+print "sourceroot=$sourceroot"
+print "destroot=$destroot"
+
 while (( i <= max ))
 do
+   local current_src_dir="${sourcedir[$i]}"
+   local current_dest_dir="${destdir[$i]}"
+   
+   print "------------------------------------------------"
+   print "Runde i=$i"
+   print "sourcedir[$i] ist: '$current_src_dir'"
+   print "destdir[$i]   ist: '$current_dest_dir'"
+
+   local full_src_path="$sourceroot/$current_src_dir"
+   local full_dest_path="$destroot/$timestamp/$current_dest_dir/"
+
+   print "Voller Quellpfad: '$full_src_path'"
+   print "Voller Zielpfad:  '$full_dest_path'"
+
+   if [[ ! -d "$full_dest_path" ]]; then
+       print "WARNUNG: Zielverzeichnis existiert nicht: $full_dest_path"
+   fi
+
    for ext in $allext; 
    do
-      command cp -p "$sourceroot/${sourcedir[$i]}"/*.${ext}(.N) "$destroot/$timestamp/${destdir[$i]}/" > /dev/null 2>/dev/null
+      local found_files=($full_src_path/*.${ext}(.N))
+      
+      print "  Extension .$ext -> Gefunden: ${#found_files} Dateien"
+
+      if (( ${#found_files} > 0 )); then
+          print "  Führe cp aus..."
+          command cp -v -p "${found_files[@]}" "$full_dest_path"
+      fi
    done
-   i=i+1
+   
+   (( i++ ))
 done
 
 # Watermarking loop

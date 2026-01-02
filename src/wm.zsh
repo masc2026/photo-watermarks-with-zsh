@@ -2,6 +2,8 @@
 
 zmodload zsh/zutil
 
+MYDIR=${0:a:h}
+
 setopt EXTENDED_GLOB
 setopt NULL_GLOB
 unsetopt NOMATCH
@@ -10,6 +12,7 @@ watermark ()
 {
    zparseopts -D -E -A opts specnametag::=opts titletag::=opts nfctag::=opts durtag::=opts tsdir:=opts gifanim=animation webpanim=animation noelapsedtimewm=ignore nodatewm=ignore timewm=ignore nfcwm=ignore sortbyname=ignore tz:=usetz ext+:=useext
    
+   local assetsdir="$MYDIR"/../"assets"
    local tsdir=$opts[-tsdir]
    local specnametag=$opts[-specnametag]
    local durframetag=$opts[-durtag]
@@ -143,7 +146,7 @@ watermark ()
          # Create Watermark Images
          # Next Frame Command for Screencast
          if [[ $nfcwm = true && -n "$nfcL[$duridx]" ]]; then
-            magick -size 220x80 xc:transparent -fill "rgba(0, 0, 0, 0.3)" -draw "roundrectangle 0,0,220,80,15,15" -fill none -gravity center -fill white -font Arial -pointsize 50 -draw "text 0,0 '$nfcL[$duridx]'" nfcStamp.png
+            magick -size 220x80 xc:transparent -fill "rgba(0, 0, 0, 0.3)" -draw "roundrectangle 0,0,220,80,15,15" -fill none -gravity center -fill white -font "$assetsdir/OpenSans-Regular.ttf" -pointsize 50 -draw "text 0,0 '$nfcL[$duridx]'" nfcStamp.png
             composite -dissolve 100% -gravity center -geometry +00+05 -density 72 nfcStamp.png $fileName "wm_$fileName"
          else
             command cp $fileName "wm_$fileName"
@@ -153,7 +156,7 @@ watermark ()
             # specnametag Keyword was found in IPTC Image Information:
             wmName=$nameL[$duridx]
             # Create nameTitleStamp.png temp file
-            magick -background none -fill white -font Times-Italic -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
+            magick -background none -fill white -font "$assetsdir/Tinos-Italic.ttf" -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
             composite -dissolve 100% -gravity north -geometry +00+05 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
          else
             # use title as watermark if name not found
@@ -161,7 +164,7 @@ watermark ()
                # titletag Keyword was found in IPTC Image Information:
                wmTitle=$titleL[$duridx]
                # Create nameTitleStamp.png temp file
-               magick -background none -fill white -font Arial -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
+               magick -background none -fill white -font "$assetsdir/Roboto-Regular.ttf" -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
                composite -dissolve 100% -gravity north -geometry +00+10 -density 72 nameTitleStamp.png "wm_$fileName" "wm_$fileName"
             fi
          fi
@@ -189,14 +192,14 @@ watermark ()
             local wmElapsedTime=$elapsedTime
 
             # Create elapsedTimeStamp.png temp file
-            magick -background none -fill white -font Helvetica -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
+            magick -background none -fill white -font "$assetsdir/Roboto-Regular.ttf" -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
             composite -dissolve 50% -gravity south-east -geometry +05+05 -density 72 elapsedTimeStamp.png "wm_$fileName" "wm_$fileName"
          fi
 
          if [[ $nodatewm = false ]];
          then
             # Create dateStamp.png temp file
-            magick -background none -fill white -font Helvetica -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
+            magick -background none -fill white -font "$assetsdir/Roboto-Regular.ttf" -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
             
             # Allign dateStamp.png at the top edge of elapsedTimeStamp.png
             local offset=$([[ -f dateStamp.png && -f elapsedTimeStamp.png ]] && print $(( 5 + $(exiftool -s3 -ImageHeight elapsedTimeStamp.png) - $(exiftool -s3 -ImageHeight dateStamp.png) ))  || print 5)
