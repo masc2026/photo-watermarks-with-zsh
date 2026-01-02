@@ -92,15 +92,14 @@ watermark ()
       local country=$exifDataA[5]
       local altitude=$exifDataA[6]
       local countryCode=$exifDataA[7]
-      # IPTC Tag 'Keywords' see https://exiftool.org/TagNames/IPTC.html
-      local alltags=
-      alltags=$(exiftool -p '$Keywords' -q -f "$fileName")
+      # Liest Keywords (IPTC) aus, falls leer, wird Subject (XMP) genommen
+      alltags=$(exiftool -s3 -m -Best -Keywords -Subject "$fileName" | head -n 1)
       # Search pattern is $specnametag:nameL
       local nameL=()
       : ${alltags//(#m)${specnametag}:[^,]#/${nameL[1+$#nameL]::=$MATCH[$#specnametag+2,$#MATCH]}}
       # Search pattern is $titletag:titleL
       local titleL=()
-      : ${alltags//(#m)${titletag}:[^,]#/${nameL[1+$#nameL]::=$MATCH[$#titletag+2,$#MATCH]}}      
+      : ${alltags//(#m)${titletag}:[^,]#/${titleL[1+$#titleL]::=$MATCH[$#titletag+2,$#MATCH]}}      
       # Search pattern is $nfctag:nfcL
       local nfcL=()
       : ${alltags//(#m)${nfctag}:[^,]#/${nfcL[1+$#nfcL]::=$MATCH[$#nfctag+2,$#MATCH]}}
@@ -153,7 +152,7 @@ watermark ()
          fi
 
          if [[ -n "$nameL[$duridx]" ]]; then
-            # specnametag Keyword was found in IPTC Image Information:
+            # specnametag Keyword was found:
             wmName=$nameL[$duridx]
             # Create nameTitleStamp.png temp file
             magick -background none -fill white -font "$assetsdir/Tinos-Italic.ttf" -pointsize 25 label:"$wmName" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
@@ -161,7 +160,7 @@ watermark ()
          else
             # use title as watermark if name not found
             if [[ -n "$titleL[$duridx]" ]]; then
-               # titletag Keyword was found in IPTC Image Information:
+               # titletag Keyword was found:
                wmTitle=$titleL[$duridx]
                # Create nameTitleStamp.png temp file
                magick -background none -fill white -font "$assetsdir/Roboto-Regular.ttf" -pointsize 25 label:"$wmTitle" -trim \( +clone -background black  -shadow 100x3+0+0 \) +swap -background none -layers merge +repage  nameTitleStamp.png
@@ -192,14 +191,14 @@ watermark ()
             local wmElapsedTime=$elapsedTime
 
             # Create elapsedTimeStamp.png temp file
-            magick -background none -fill white -font "$assetsdir/Roboto-Regular.ttf" -pointsize 40 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
+            magick -background none -fill gray -font "$assetsdir/Roboto-Regular.ttf" -pointsize 30 label:"$wmElapsedTime" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  elapsedTimeStamp.png
             composite -dissolve 50% -gravity south-east -geometry +05+05 -density 72 elapsedTimeStamp.png "wm_$fileName" "wm_$fileName"
          fi
 
          if [[ $nodatewm = false ]];
          then
             # Create dateStamp.png temp file
-            magick -background none -fill white -font "$assetsdir/Roboto-Regular.ttf" -pointsize 40 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
+            magick -background none -fill gray -font "$assetsdir/Roboto-Regular.ttf" -pointsize 30 label:"$wmDate" -trim \( +clone -background black  -shadow 50x3+0+0 \) +swap -background none -layers merge +repage  dateStamp.png
             
             # Allign dateStamp.png at the top edge of elapsedTimeStamp.png
             local offset=$([[ -f dateStamp.png && -f elapsedTimeStamp.png ]] && print $(( 5 + $(exiftool -s3 -ImageHeight elapsedTimeStamp.png) - $(exiftool -s3 -ImageHeight dateStamp.png) ))  || print 5)

@@ -4,6 +4,14 @@ The [run.zsh](/src/run.zsh) zsh script goes through a series of photos and renam
 
 Optionally, the resulting files can then be used to create animated `Gif` and `WebP`.
 
+<div align="center">
+
+Animated `Webp`          |
+:-------------------------:|
+<img align="center" width="800" src="./img/animation.webp"> | 
+
+</div>
+
 ## Watermarks
 
 The following watermarks can be added optionally:
@@ -38,18 +46,7 @@ Animated `Gif` and/or `WebP` can be created from the watermarked, ordered, newly
 
 With animated `WebP` the duration after which an image changes to the next image can be set for each photo. This can also be controlled with the help of a keyword of a tag (`MS`). For example, the command: `exiftool -Keywords="MS:1000,TI:View of the lake" -overwrite_original ../example/photos/ER6A2996.jpg` sets the duration to one second.
 
-Animated `WebP` have a smaller size and better quality then animated `Gif`. They have been tested on browser like:
-
-<div align="left">
-
-Platform          |  Browser
--------------------------|-------------------------
-macOS | Safari Version 16.5
-macOS | Chrome Version 114.0.5735.90
-Win11 | Edge Version 114.0.1823.37
-Ubuntu | Firefox 113.0.2 (64-Bit)
-
-</div>
+Animated `WebP` have a smaller size and better quality then animated `Gif`.
 
 This can also be used to create a screencast from a series of screenshots.
 
@@ -212,7 +209,15 @@ On macOS:
     mkdir Example
     cp -r ExampleC/Photos Example
     ./src/run.zsh -webpanim
-            1 image files updated
+            1 image files updatedWhile the other suggestions are valid, there’s another approach worth considering. You can use a service like Raw.githubusercontent.com. Here’s how:
+
+Upload your image to your GitHub repository.
+Navigate to the image and click on ‘Raw’.
+Copy the URL from your browser.
+Use this URL in your README markdown.
+The advantage here is that you maintain control over your image within your GitHub ecosystem. It’s particularly useful for project-specific images or diagrams. Just remember, any changes to the image will require a new commit to update it in your README.
+
+This method has served me well in numerous projects, offering a clean, professional look without relying on external services.
         New photo created from original ER6A3682.jpg with watermark: ~/photo-watermarks-with-zsh-main/photo-watermarks-with-zsh-main/src/../Example/1686110729/Photos/Watermarked/file-000001.jpg
         ...
             1 image files updated
@@ -245,7 +250,15 @@ On Ubuntu 22.04 based Docker container:
         1 image files updated
     New photo created from original ER6A3718-Verbessert-RR.jpg with watermark: /root/photo-watermarks-with-zsh-main/photo-watermarks-with-zsh-main/src/../Example/1686205541/Photos/Watermarked/file-000025.jpg
     Saved file /root/photo-watermarks-with-zsh-main/photo-watermarks-with-zsh-main/src/../Example/1686205541/Photos/Watermarked/animation.webp (2257610 bytes)
+While the other suggestions are valid, there’s another approach worth considering. You can use a service like Raw.githubusercontent.com. Here’s how:
 
+Upload your image to your GitHub repository.
+Navigate to the image and click on ‘Raw’.
+Copy the URL from your browser.
+Use this URL in your README markdown.
+The advantage here is that you maintain control over your image within your GitHub ecosystem. It’s particularly useful for project-specific images or diagrams. Just remember, any changes to the image will require a new commit to update it in your README.
+
+This method has served me well in numerous projects, offering a clean, professional look without relying on external services.
 Drag the file `animation.webp` into a browser window; you should see that the animated `WebP` is running.
 
 ## Command syntax and Exif tags
@@ -330,7 +343,7 @@ Script | Parameter |  Comment
 
 </div>
 
-Customize ImageMagick® `convert` calls:
+Customize ImageMagick® `magick` calls:
 
 <div align="left">
 
@@ -344,7 +357,7 @@ Customize ImageMagick® `convert` calls:
 
 For all options see: 
 
-https://imagemagick.org/script/convert.php
+https://imagemagick.org/script/magick.php
 
 Customize ImageMagick®  `composite` calls:
 
